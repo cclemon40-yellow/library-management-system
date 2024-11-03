@@ -8,25 +8,29 @@
 
 using namespace std;
 
+// 圖書結構體
 struct Book {
-    string title;
-    string author;
-    string id;
+    string title;  // 書名
+    string author; // 作者
+    string id;     // 圖書編號
 };
 
+// 借閱者結構體
 struct Borrower {
-    string name;
-    vector<string> borrowedBooks;
+    string name;               // 借閱者姓名
+    vector<string> borrowedBooks; // 借閱的圖書編號列表
 };
 
-list<Book> books;
-forward_list<Borrower> borrowers;
+list<Book> books; // 使用雙向鏈結串列管理圖書
+forward_list<Borrower> borrowers; // 使用單向鏈結串列管理借閱者
 
+// 驗證圖書編號是否符合規範
 bool isValidBookId(const string& id) {
     regex pattern("^[A-Z][0-9]{4}$");
     return regex_match(id, pattern);
 }
 
+// 添加新圖書
 void addBook() {
     Book book;
     cout << "輸入書名: ";
@@ -43,18 +47,22 @@ void addBook() {
     books.push_back(book);
 }
 
+// 刪除指定圖書編號的圖書
 void deleteBook() {
     string id;
     cout << "輸入要刪除的圖書編號: ";
     cin >> id;
+    //從 books 雙向鏈結串列中移除所有圖書編號與變數 id 相同的圖書
     books.remove_if([&id](const Book& book) { return book.id == id; });
 }
 
+// 搜索指定圖書編號的圖書
 void searchBook() {
     string id;
     cout << "輸入要搜索的圖書編號: ";
     cin >> id;
-    auto it = find_if(books.begin(), books.end(), [&id](const Book& book) { return book.id == id; });
+    auto it = find_if(books.begin(), books.end()/*•	這兩個迭代器定義了 books 的範圍。*/
+                      , [&id](const Book& book) { return book.id == id; });
     if (it != books.end()) {
         cout << "書名: " << it->title << ", 作者: " << it->author << ", 圖書編號: " << it->id << endl;
     }
@@ -63,6 +71,7 @@ void searchBook() {
     }
 }
 
+// 依照圖書編號排序列出所有圖書
 void listBooks() {
     books.sort([](const Book& a, const Book& b) { return a.id < b.id; });
     for (const auto& book : books) {
@@ -70,6 +79,7 @@ void listBooks() {
     }
 }
 
+// 添加新借閱者
 void addBorrower() {
     Borrower borrower;
     cout << "輸入借閱者姓名: ";
@@ -87,6 +97,7 @@ void addBorrower() {
     borrowers.push_front(borrower);
 }
 
+// 刪除指定姓名的借閱者
 void deleteBorrower() {
     string name;
     cout << "輸入要刪除的借閱者姓名: ";
@@ -94,6 +105,7 @@ void deleteBorrower() {
     borrowers.remove_if([&name](const Borrower& borrower) { return borrower.name == name; });
 }
 
+// 搜索指定姓名的借閱者
 void searchBorrower() {
     string name;
     cout << "輸入要搜索的借閱者姓名: ";
@@ -111,6 +123,7 @@ void searchBorrower() {
     }
 }
 
+// 列出所有借閱者及其借閱的圖書
 void listBorrowers() {
     for (const auto& borrower : borrowers) {
         cout << "姓名: " << borrower.name << ", 借閱的圖書編號: ";
@@ -121,6 +134,7 @@ void listBorrowers() {
     }
 }
 
+// 主函式
 int main() {
     int choice;
     do {
@@ -129,6 +143,7 @@ int main() {
         cout << "選擇操作: ";
         cin >> choice;
 
+        // 檢查輸入是否有效
         if (cin.fail()) {
             cin.clear(); // 清除錯誤狀態
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 忽略無效輸入
@@ -136,6 +151,7 @@ int main() {
             continue;
         }
 
+        // 根據選擇執行相應操作
         switch (choice) {
         case 1: addBook(); break;
         case 2: deleteBook(); break;
@@ -148,7 +164,6 @@ int main() {
         case 9: break;
         default: cout << "無效的選擇。" << endl; break;
         }
-    } while (choice != 9);
+    } while (choice != 9); // 當選擇不為9時重複循環
     return 0;
 }
-
