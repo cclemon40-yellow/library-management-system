@@ -128,6 +128,14 @@ int main() {
         cout << "5. 添加新借閱者\n6. 刪除借閱者\n7. 搜索借閱者\n8. 列出所有借閱者\n9. 退出\n";
         cout << "選擇操作: ";
         cin >> choice;
+
+        if (cin.fail()) {
+            cin.clear(); // 清除錯誤狀態
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 忽略無效輸入
+            cout << "無效的選擇，請輸入數字。" << endl;
+            continue;
+        }
+
         switch (choice) {
         case 1: addBook(); break;
         case 2: deleteBook(); break;
@@ -143,3 +151,4 @@ int main() {
     } while (choice != 9);
     return 0;
 }
+
